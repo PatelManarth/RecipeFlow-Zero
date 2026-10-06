@@ -4,22 +4,37 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#171512" />
-  <meta name="description" content="RecipeFlow Zero — local-first recipe manager, meal planner, grocery budgeter and on-device AI cooking assistant." />
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.4.0" />
+  <meta name="description" content="RecipeFlow Zero — local-first recipe manager, meal planner, grocery budgeter and optional on-device AI cooking assistant." />
+  <link rel="manifest" href="./manifest.webmanifest?v=0.5.0" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.0" />
   <title>RecipeFlow Zero</title>
 </head>
 <body>
   <div id="app-shell">
     <header class="topbar">
       <button class="brand" data-nav="home" aria-label="Go home"><span class="brand-mark">R0</span><span><strong>RecipeFlow</strong><small>ZERO</small></span></button>
-      <div class="top-actions"><button class="icon-btn" id="quick-import" title="Import recipe">＋</button><button class="icon-btn" data-nav="settings" title="Settings">⚙︎</button></div>
+      <div class="top-actions">
+        <button class="account-pill" id="account-pill" data-nav="settings" title="Account and sync">Local</button>
+        <button class="icon-btn" id="quick-import" title="Import recipe" aria-label="Import recipe">＋</button>
+        <button class="icon-btn" data-nav="settings" title="Settings" aria-label="Settings">⚙︎</button>
+      </div>
     </header>
-    <main id="view" tabindex="-1"><div style="padding:24px"><h2>Starting RecipeFlow…</h2><p>If this remains visible, open ⚙︎ App Health.</p></div></main>
+    <main id="view" tabindex="-1"><div class="startup"><h2>Starting RecipeFlow…</h2><p>The core app loads before cloud, AI, or importer services.</p></div></main>
     <nav class="bottom-nav" aria-label="Main navigation">
-      <button data-nav="home"><span>⌂</span><small>Home</small></button><button data-nav="recipes"><span>▤</span><small>Recipes</small></button><button data-nav="plan"><span>▦</span><small>Plan</small></button><button data-nav="groceries"><span>✓</span><small>Groceries</small></button><button data-nav="ai"><span>✦</span><small>AI</small></button>
+      <button data-nav="home"><span>⌂</span><small>Home</small></button>
+      <button data-nav="recipes"><span>▤</span><small>Recipes</small></button>
+      <button data-nav="plan"><span>▦</span><small>Plan</small></button>
+      <button data-nav="groceries"><span>✓</span><small>Groceries</small></button>
+      <button data-nav="ai"><span>✦</span><small>AI</small></button>
     </nav>
   </div>
-  <dialog id="modal"><div id="modal-body"></div></dialog><div id="toast" role="status" aria-live="polite"></div>
-  <div id="runtime-error" hidden style="position:fixed;left:12px;right:12px;bottom:85px;background:#fff3cd;border:1px solid #d8b84e;padding:10px;border-radius:10px;z-index:20"></div>\n  <script defer src="./app.js?v=0.4.0"></script>
-</body></html>
+  <div id="modal" class="modal-backdrop" hidden><section class="modal-card" role="dialog" aria-modal="true" aria-label="Recipe import"><div id="modal-body"></div></section></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="runtime-error" hidden></div>
+  <noscript><div class="noscript">RecipeFlow requires JavaScript.</div></noscript>
+  <script defer src="./config.js?v=0.5.0"></script>
+  <script defer src="./app.js?v=0.5.0"></script>
+  <script defer src="./cloud.js?v=0.5.0"></script>
+  <script defer src="./ai.js?v=0.5.0"></script>
+</body>
+</html>
