@@ -1,1 +1,29 @@
-{"name":"RecipeFlow Zero","short_name":"RecipeFlow","description":"Free local-first recipe manager, meal planner, grocery budgeter and AI cooking assistant.","start_url":"./","scope":"./","display":"standalone","background_color":"#f6f2ea","theme_color":"#171512","share_target":{"action":"./?share=1","method":"GET","params":{"title":"title","text":"text","url":"url"}}}
+{
+  "name": "RecipeFlow Zero",
+  "short_name": "RecipeFlow",
+  "id": "./",
+  "description": "Local-first recipe manager, meal planner, grocery budgeter, cross-device sync, and optional on-device AI cooking assistant.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#f6f2ea",
+  "theme_color": "#171512",
+  "categories": [
+    "food",
+    "health",
+    "lifestyle"
+  ],
+  "share_target": {
+    "action": "./?share=1",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}
