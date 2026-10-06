@@ -1,1 +1,1 @@
-RecipeFlow Zero v0.2.0 — ReciMe + Eat This Much core
+RecipeFlow Zero v0.3.0 — smart imports + local AI + nutrition planning\n
