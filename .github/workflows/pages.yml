@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
+      - name: Validate JavaScript\n        run: node --check app.js && node --check worker/worker.js\n      - name: Validate manifest\n        run: node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8'))"\n      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
