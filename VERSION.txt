@@ -1,1 +1,1 @@
-RecipeFlow Zero v0.5.0 — stable iPhone core + user-scoped auto sync + isolated WebGPU/WebLLM/OCR\n
+RecipeFlow Zero v0.5.1 — live Supabase user sync + authenticated importer + iPhone-safe core
