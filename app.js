@@ -83,7 +83,7 @@ function setCloudStatus(next){cloudStatus=Object.assign({},cloudStatus,next||{})
 function renderAccountPill(){var p=q("#account-pill");if(!p)return;p.textContent=cloudStatus.email?cloudStatus.email:(cloudStatus.mode==="cloud"?"Cloud":"Local");p.title=cloudStatus.message||""}
 function getSiteConfig(){return window.RECIPEFLOW_CONFIG||{}}
 function getLocalConnection(){try{return JSON.parse(localStorage.getItem("rfz-connection")||"{}")}catch(e){return{}}}
-function getConnectionConfig(){return Object.assign({},getSiteConfig(),getLocalConnection())}
+function getConnectionConfig(){var s=getSiteConfig(),l=getLocalConnection();return{supabaseUrl:l.supabaseUrl||s.supabaseUrl||"",supabaseKey:l.supabaseKey||s.supabaseKey||"",workerUrl:l.workerUrl||s.workerUrl||"",aiModelF16:s.aiModelF16,aiModelF32:s.aiModelF32}}
 function forbiddenKey(k){
   if(!k)return false;
   if(/^sb_secret_/i.test(k)||/service_role/i.test(k))return true;
