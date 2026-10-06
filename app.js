@@ -1,6 +1,6 @@
 (function(){
 "use strict";
-var VERSION="0.5.0";
+var VERSION="0.5.1";
 var SCHEMA=5;
 var scope="guest";
 var cloudStatus={mode:"local",email:"",message:"Local mode",lastSync:""};
@@ -212,7 +212,7 @@ function settings(){
   '<section class="card wide"><h2>Food preferences</h2><div class="form-grid">'+
   field("Dietary patterns","diet",f.dietary.join(", "))+field("Allergies / never include","allergy",f.allergies.join(", "))+field("Dislikes","dislike",f.dislikes.join(", "))+field("Foods you like","likes",f.likes.join(", "))+field("Cuisines","cuisines",f.cuisines.join(", "))+field("Pantry basics","pantry",state.pantry.join(", "))+field("Meals/day","meals",f.mealsPerDay,"number")+'</div></section>'+
   '<section class="card wide"><h2>Nutrition & budget targets</h2><div class="form-grid">'+field("Calories","cal",s.calories,"number")+field("Protein g","protein",s.protein,"number")+field("Carbs g","carbs",s.carbs,"number")+field("Fat g","fat",s.fat,"number")+field("Weekly grocery budget","budget",s.weeklyBudget,"number")+'</div></section>'+
-  '<section class="card wide"><h2>Site connections</h2><p class="muted">For seamless laptop/iPhone sync, these public Supabase values should ultimately be built into config.js. Secret/service-role keys are rejected.</p><div class="form-grid">'+field("Supabase project URL","surl",c.supabaseUrl||"")+field("Supabase publishable key","skey",c.supabaseKey||"","password")+field("Cloudflare importer URL","workerurl",c.workerUrl||"")+'</div><button class="btn section" data-action="save-connection">Save connection on this device</button></section>'+
+  '<section class="card wide"><h2>Backend</h2><p><b>Supabase:</b> connected globally for RecipeFlow.</p><p class="muted">Your recipes, plans, groceries, pantry, goals and preferences are bound to your authenticated user ID. Signed-in users also get the authenticated recipe importer automatically.</p></section>'+
   '<section class="card wide"><h2>App Health</h2><p>Version: <b>'+VERSION+'</b><br>Scope: <b>'+esc(scope)+'</b><br>Online: <b>'+navigator.onLine+'</b><br>WebGPU: <b>'+(navigator.gpu?"available":"not detected")+'</b><br>Service Worker: <b>'+("serviceWorker" in navigator?"supported":"unavailable")+'</b></p><button class="btn" data-action="repair">Check for app update</button></section>'+
   '</div><button class="btn primary section" data-action="save-settings">Save profile & preferences</button>';
 }
@@ -251,7 +251,10 @@ async function runImport(){
     var parsed;
     if(/^https?:\/\//i.test(text)){
       var url=(text.match(/https?:\/\/\S+/)||[])[0]||text,c=getConnectionConfig(),data=null;
-      if(c.workerUrl){
+      if(window.RecipeFlowCloud&&window.RecipeFlowCloud.importUrl){
+        try{data=await window.RecipeFlowCloud.importUrl(url)}catch(ignoreCloud){}
+      }
+      if(!data&&c.workerUrl){
         try{
           var res=await fetch(String(c.workerUrl).replace(/\/$/,"")+"/import?url="+encodeURIComponent(url));
           var json=await res.json();if(res.ok)data=json;
@@ -319,7 +322,7 @@ window.addEventListener("offline",function(){setCloudStatus({message:"Offline ·
 window.addEventListener("error",function(e){showRuntime("Runtime error: "+(e.message||"Unknown error"))});
 window.addEventListener("unhandledrejection",function(e){showRuntime("Background feature error: "+(e.reason&&e.reason.message?e.reason.message:"Unknown error"))});
 var initial=loadKey(keyFor("guest"))||migrateLegacy()||fresh();state=cleanState(initial);persist(true);
-if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js?v=0.5.0",{updateViaCache:"none"}).catch(function(){})});
+if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js?v=0.5.1",{updateViaCache:"none"}).catch(function(){})});
 q("#quick-import").addEventListener("click",function(){go("recipes");setTimeout(openImport,0)});
 render(currentPage());
 var shareParams=new URLSearchParams(location.search);
