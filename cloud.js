@@ -48,7 +48,7 @@ async function syncNow(opts){
   if(!row)await push(local);
   else{
    var rd=row.data||{},lt=Number(local.meta&&local.meta.updatedAt)||0,rt=Number(rd.meta&&rd.meta.updatedAt)||Date.parse(row.updated_at)||0;
-   var first=opts.initial&&lastActivation&&(!lastActivation.hadCache||lastActivation.migrated);
+   var first=opts.initial&&lastActivation&&!lastActivation.hadCache;
    if(first||rt>lt){A().replaceState(clean(rd),{scope:"user:"+user.id});stat({mode:"cloud",email:user.email||"",message:first?"Downloaded your account data to this device.":"Downloaded newer account data.",lastSync:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})})}
    else if(lt>rt)await push(local);
    else stat({mode:"cloud",email:user.email||"",message:"Synced",lastSync:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});
