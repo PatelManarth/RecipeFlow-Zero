@@ -1,5 +1,5 @@
-const CACHE='recipeflow-static-v032';
-const STATIC=['./styles.css?v=0.3.2','./manifest.webmanifest'];
+const CACHE='recipeflow-static-v033';
+const STATIC=['./styles.css?v=0.3.3','./manifest.webmanifest'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(STATIC)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
