@@ -68,5 +68,7 @@ window.RecipeFlowCloud={sendMagicLink:sendMagicLink,syncNow:function(){return sy
 window.addEventListener("recipeflow:statechanged",schedule);
 window.addEventListener("recipeflow:configchanged",connect);
 window.addEventListener("online",function(){syncNow().catch(function(){})});
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")syncNow().catch(function(){})});
+setInterval(function(){if(document.visibilityState==="visible")syncNow().catch(function(){})},30000);
 if(window.RecipeFlow)connect();else window.addEventListener("recipeflow:ready",connect,{once:true});
 })();
