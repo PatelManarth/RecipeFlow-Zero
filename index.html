@@ -6,9 +6,7 @@
   <meta name="theme-color" content="#171512" />
   <meta name="description" content="RecipeFlow Zero — local-first recipe manager, meal planner, grocery budgeter and on-device AI cooking assistant." />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="icon" href="./icons/icon-192.png" />
-  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=0.3.2" />
   <title>RecipeFlow Zero</title>
 </head>
 <body>
@@ -17,11 +15,11 @@
       <button class="brand" data-nav="home" aria-label="Go home"><span class="brand-mark">R0</span><span><strong>RecipeFlow</strong><small>ZERO</small></span></button>
       <div class="top-actions"><button class="icon-btn" id="quick-import" title="Import recipe">＋</button><button class="icon-btn" data-nav="settings" title="Settings">⚙︎</button></div>
     </header>
-    <main id="view" tabindex="-1"></main>
+    <main id="view" tabindex="-1"><div style="padding:24px"><h2>Starting RecipeFlow…</h2><p>If this remains visible, open ⚙︎ App Health.</p></div></main>
     <nav class="bottom-nav" aria-label="Main navigation">
       <button data-nav="home"><span>⌂</span><small>Home</small></button><button data-nav="recipes"><span>▤</span><small>Recipes</small></button><button data-nav="plan"><span>▦</span><small>Plan</small></button><button data-nav="groceries"><span>✓</span><small>Groceries</small></button><button data-nav="ai"><span>✦</span><small>AI</small></button>
     </nav>
   </div>
   <dialog id="modal"><div id="modal-body"></div></dialog><div id="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="./app.js?v=0.3.2"></script>
 </body></html>
