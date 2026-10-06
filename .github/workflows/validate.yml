@@ -1,0 +1,39 @@
+name: Validate RecipeFlow
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check browser JavaScript syntax
+        run: |
+          node --check config.js
+          node --check app.js
+          node --check cloud.js
+          node --check ai.js
+          node --check sw.js
+      - name: Check Worker module syntax
+        run: node --input-type=module --check < worker/worker.js
+      - name: Validate manifest and required assets
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8'))"
+          node - <<'NODE'
+          const fs=require('fs');
+          const html=fs.readFileSync('index.html','utf8');
+          for (const f of ['config.js','app.js','cloud.js','ai.js','styles.css','manifest.webmanifest']) {
+            if (!html.includes(f)) throw new Error('index.html missing '+f);
+            if (!fs.existsSync(f)) throw new Error('missing '+f);
+          }
+          const app=fs.readFileSync('app.js','utf8');
+          if (!app.includes('0.5.0')) throw new Error('unexpected app version');
+          console.log('Static validation passed');
+          NODE
