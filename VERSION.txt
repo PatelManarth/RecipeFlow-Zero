@@ -1,1 +1,1 @@
-RecipeFlow Zero v0.3.0 — smart imports + local AI + nutrition planning\n
+RecipeFlow Zero v0.3.1 — Safari startup hotfix + smart imports + local AI\n
