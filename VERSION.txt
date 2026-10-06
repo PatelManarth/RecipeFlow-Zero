@@ -1,1 +1,1 @@
-RecipeFlow Zero v0.4.0 — stable core; advanced features isolated\n
+RecipeFlow Zero v0.5.0 — stable iPhone core + user-scoped auto sync + isolated WebGPU/WebLLM/OCR\n
