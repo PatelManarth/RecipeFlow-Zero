@@ -1,13 +1,13 @@
-const CACHE="recipeflow-v050";
+const CACHE="recipeflow-v051";
 const CORE=[
   "./",
   "./index.html",
-  "./styles.css?v=0.5.0",
-  "./config.js?v=0.5.0",
-  "./app.js?v=0.5.0",
-  "./cloud.js?v=0.5.0",
-  "./ai.js?v=0.5.0",
-  "./manifest.webmanifest?v=0.5.0"
+  "./styles.css?v=0.5.1",
+  "./config.js?v=0.5.1",
+  "./app.js?v=0.5.1",
+  "./cloud.js?v=0.5.1",
+  "./ai.js?v=0.5.1",
+  "./manifest.webmanifest?v=0.5.1"
 ];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
