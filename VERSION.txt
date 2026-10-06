@@ -1,1 +1,1 @@
-RecipeFlow Zero v0.3.2 — cache-safe deployment + App Health + managed WebGPU/WebLLM\n
+RecipeFlow Zero v0.3.3 — stability release; CI syntax gate enabled\n
