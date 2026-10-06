@@ -1,1 +1,1 @@
-RecipeFlow Zero v0.3.1 — Safari startup hotfix + smart imports + local AI\n
+RecipeFlow Zero v0.3.2 — cache-safe deployment + App Health + managed WebGPU/WebLLM\n
