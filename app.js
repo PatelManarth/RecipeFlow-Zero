@@ -30,19 +30,20 @@ function merge(base,value){
   }
   return value===undefined||value===null?base:value;
 }
+function cleanState(x){x=merge(DEFAULTS,x||{});if(x.settings){delete x.settings.supabaseUrl;delete x.settings.supabaseKey;delete x.settings.workerUrl;delete x.settings.email}return x}
 function fresh(){return clone(DEFAULTS)}
 function keyFor(s){return "rfz-v5:"+s}
 function meaningful(x){
   return !!(x&&((x.recipes&&x.recipes.length)||(x.groceries&&x.groceries.length)||(x.plan&&Object.keys(x.plan).length)||(x.meta&&x.meta.updatedAt>0)));
 }
 function loadKey(k){
-  try{var raw=localStorage.getItem(k);return raw?merge(DEFAULTS,JSON.parse(raw)):null}catch(e){return null}
+  try{var raw=localStorage.getItem(k);return raw?cleanState(JSON.parse(raw)):null}catch(e){return null}
 }
 function migrateLegacy(){
   try{
     var old=localStorage.getItem("rfz-v4");
     if(!old)return null;
-    var x=merge(DEFAULTS,JSON.parse(old));
+    var x=cleanState(JSON.parse(old));
     if(meaningful(x)&&!x.meta.updatedAt)x.meta.updatedAt=Date.now();
     return x;
   }catch(e){return null}
@@ -53,7 +54,7 @@ function persist(noEvent){
 }
 function markChanged(){state.meta.updatedAt=Date.now();state.version=SCHEMA;persist(false)}
 function replaceState(next,opts){
-  state=merge(DEFAULTS,next||{});
+  state=cleanState(next||{});
   state.version=SCHEMA;
   if(opts&&opts.scope)scope=opts.scope;
   persist(true);
@@ -229,9 +230,10 @@ function addRecipe(){
   state.recipes.unshift({id:uid(),title:title,servings:1,ingredients:ing.split(/\n/).filter(Boolean).map(parseIng),steps:[],nutrition:{calories:cal,protein:pro},tags:state.prefs.dietary.slice(),createdAt:new Date().toISOString()});
   markChanged();render("recipes");
 }
-function openImport(){
+function openImport(prefill){
   var m=q("#modal");m.hidden=false;
   q("#modal-body").innerHTML='<div class="modal-head"><h2>Smart import</h2><button class="icon-btn" data-action="close-modal">×</button></div><p>Paste a recipe URL, Instagram/ReciMe link, caption, or recipe text. For screenshots, choose an image and RecipeFlow will try local OCR.</p><textarea id="import-text" class="input" rows="6" placeholder="Paste link, caption, or recipe text"></textarea><label class="field section">Screenshot / recipe image<input id="import-file" type="file" accept="image/*"></label><div class="row wrap section"><button class="btn accent" data-action="run-import">Import</button><span id="import-status" class="muted"></span></div>';
+  if(prefill)q("#import-text").value=prefill;
 }
 function closeImport(){q("#modal").hidden=true;q("#modal-body").innerHTML=""}
 function deterministicParse(text){
@@ -250,10 +252,13 @@ async function runImport(){
     if(/^https?:\/\//i.test(text)){
       var url=(text.match(/https?:\/\/\S+/)||[])[0]||text,c=getConnectionConfig(),data=null;
       if(c.workerUrl){
-        var res=await fetch(String(c.workerUrl).replace(/\/$/,"")+"/import?url="+encodeURIComponent(url));
-        var json=await res.json();if(!res.ok)throw new Error(json.error||"Importer failed");data=json;
-      }else{
-        var jr=await fetch("https://r.jina.ai/"+url);if(!jr.ok)throw new Error("Link reader failed. Configure the Cloudflare importer or use a screenshot.");
+        try{
+          var res=await fetch(String(c.workerUrl).replace(/\/$/,"")+"/import?url="+encodeURIComponent(url));
+          var json=await res.json();if(res.ok)data=json;
+        }catch(ignore){}
+      }
+      if(!data){
+        var jr=await fetch("https://r.jina.ai/"+url);if(!jr.ok)throw new Error("This link did not expose recipe data. Use a screenshot or paste the caption/text.");
         var raw=await jr.text();parsed=await structureWithFallback(raw,status);
       }
       if(data)parsed={title:data.title||"Imported recipe",ingredients:(data.ingredients||[]).map(parseIng),steps:data.instructions||[],servings:data.servings||1,nutrition:data.nutrition||{},image:data.image||"",sourceUrl:url,tags:["imported"]};
@@ -313,10 +318,16 @@ window.addEventListener("online",function(){setCloudStatus({message:cloudStatus.
 window.addEventListener("offline",function(){setCloudStatus({message:"Offline · local data is still available"})});
 window.addEventListener("error",function(e){showRuntime("Runtime error: "+(e.message||"Unknown error"))});
 window.addEventListener("unhandledrejection",function(e){showRuntime("Background feature error: "+(e.reason&&e.reason.message?e.reason.message:"Unknown error"))});
-var initial=loadKey(keyFor("guest"))||migrateLegacy()||fresh();state=initial;persist(true);
+var initial=loadKey(keyFor("guest"))||migrateLegacy()||fresh();state=cleanState(initial);persist(true);
 if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js?v=0.5.0",{updateViaCache:"none"}).catch(function(){})});
 q("#quick-import").addEventListener("click",function(){go("recipes");setTimeout(openImport,0)});
 render(currentPage());
+var shareParams=new URLSearchParams(location.search);
+if(shareParams.get("share")==="1"){
+  var shared=[shareParams.get("title"),shareParams.get("text"),shareParams.get("url")].filter(Boolean).join("\n");
+  go("recipes");
+  setTimeout(function(){openImport(shared);history.replaceState(null,"",location.pathname+location.hash)},0);
+}
 window.RecipeFlow={
   version:VERSION,
   getState:function(){return clone(state)},
