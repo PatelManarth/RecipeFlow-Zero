@@ -1,1 +1,1 @@
-RecipeFlow Zero v0.3.3 — stability release; CI syntax gate enabled\n
+RecipeFlow Zero v0.4.0 — stable core; advanced features isolated\n
