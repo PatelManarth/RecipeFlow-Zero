@@ -64,7 +64,13 @@ async function sendMagicLink(email){
  }catch(e){fail(e);A().toast(e.message)}
 }
 async function signOut(){try{if(client)await client.auth.signOut()}catch(e){}user=null;A().activateUser(null);stat({mode:"cloud",email:"",message:"Signed out · guest data is local to this device.",lastSync:""});A().toast("Signed out.")}
-window.RecipeFlowCloud={sendMagicLink:sendMagicLink,syncNow:function(){return syncNow({manual:true})},signOut:signOut,reconnect:connect};
+async function importUrl(url){
+  if(!client||!user)return null;
+  var r=await client.functions.invoke("recipe-import",{body:{url:url}});
+  if(r.error)throw r.error;
+  return r.data||null;
+}
+window.RecipeFlowCloud={sendMagicLink:sendMagicLink,syncNow:function(){return syncNow({manual:true})},signOut:signOut,reconnect:connect,importUrl:importUrl};
 window.addEventListener("recipeflow:statechanged",schedule);
 window.addEventListener("recipeflow:configchanged",connect);
 window.addEventListener("online",function(){syncNow().catch(function(){})});
